@@ -14,15 +14,14 @@ arrays are grouped into one encapsulating array.
 */
 
 function pairElement(str) {
-    const pairings = {
-      "A": "T",
-      "T": "A",
-      "G": "C",
-      "C": "G"
-    }
-  
-    return str.split("").map(elem => [elem, pairings[elem]]);
+  const pairings = {
+    "A": "T",
+    "T": "A",
+    "G": "C",
+    "C": "G"
   }
-  
-  console.log(pairElement("GCG"));
-  
+
+  return str.split("").map(elem => [elem, pairings[elem]]);
+}
+
+console.log(pairElement("GCG"));

@@ -20,7 +20,6 @@ function convertHTML(str) {
             return elem;
         }
     });
-    console.log(convertedArr);
     return convertedArr.join('');
 }
 

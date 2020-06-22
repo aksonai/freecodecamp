@@ -15,8 +15,8 @@ also pass strings with special symbols, such as "2A3*3a2", "2A3 3a2", and
 
 
 function palindrome(str) {
-    let newStr = str.toLowerCase().replace(/[^a-z\d]/g, '');
-    return newStr.split('').reverse().join('') === newStr;
+  let newStr = str.toLowerCase().replace(/[^a-z\d]/g, '');
+  return newStr.split('').reverse().join('') === newStr;
 }
 
 console.log(palindrome("_eye__"));

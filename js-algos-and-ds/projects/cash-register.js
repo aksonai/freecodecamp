@@ -13,57 +13,39 @@ const currencyUnit = {
 
 function checkCashRegister(price, cash, cid) {
 
-  // Converting cid in an object for easier access and calculating the sum
+  let changeSum = cash * 100 - price * 100;
+  let changeSumCheck = changeSum;
+  let change = [];
+  let status = '';
+
   let cidSum = 0;
-  let cidUnits = {};
-  cid.forEach(elem => {
-    cidUnits[elem[0]] = elem[1] * 100;
-    cidSum += elem[1] * 100;
+  let filteredCid = cid.filter(elem => elem[1] !== 0).reverse();
+
+  filteredCid.forEach(elem => {
+    let curr = elem[0];
+    let currSum = elem[1] * 100;
+    cidSum += currSum;
+    let amount = 0;
+    while (changeSum >= currencyUnit[curr] && currSum > 0) {
+      amount += currencyUnit[curr];
+      changeSum -= currencyUnit[curr];
+      currSum -= currencyUnit[curr];
+    }
+    if (amount !== 0) {
+      change.push([curr, amount / 100]);
+    }
   });
 
-
-  // The change Sum we need to return
-  let changeSum = cash * 100 - price * 100;
-  let change = [];
-  let changeRecord = {};
-  console.log(changeSum);
-  console.log(cidSum);
-  if (changeSum - cidSum > 0) {
-    changeRecord["status"] = "INSUFFICIENT_FUNDS";
-    changeRecord["change"] = change;
-    return changeRecord;
-  } else if (changeSum == cidSum) {
-    changeRecord["status"] = "CLOSED";
-    changeRecord["change"] = cid;
+  if (changeSum > 0) {
+    status = 'INSUFFICIENT_FUNDS';
+    change = [];
+  } else if (changeSum == 0 && changeSumCheck == cidSum) {
+    status = 'CLOSED';
+    change = cid;
+  } else {
+    status = 'OPEN';
   }
-
-  changeRecord["status"] = "OPEN";
-
-  // Calculating the change currency units
-  let allUnits = Object.keys(currencyUnit).reverse();
-  let i = 0;
-  let curr;
-  let currSum = 0;
-  while (changeSum > 0) {
-    curr = allUnits[i];
-    if (changeSum >= currencyUnit[curr] && cidUnits[curr] > 0) {
-      currSum += currencyUnit[curr];
-      changeSum -= currencyUnit[curr];
-      cidUnits[curr] = cidUnits[curr] - currencyUnit[curr];
-    } else {
-      if (currSum > 0) {
-        change.push([curr, currSum]);
-      }
-      i++;
-      currSum = 0.0;
-    }
-  }
-  if (currSum > 0) {
-    change.push([curr, currSum]);
-  }
-  change.map(elem => elem[1] /= 100);
-  changeRecord["change"] = change;
-  return changeRecord;
+  return { 'status': status, 'change': change };
 }
 
-console.log(checkCashRegister(19.5, 20, [["PENNY", 0.01], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 1], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]]));
+console.log(checkCashRegister(19.5, 20, [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]]));
